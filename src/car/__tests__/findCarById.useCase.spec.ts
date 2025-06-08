@@ -1,7 +1,6 @@
-import { mockCarRepository } from '../__moks__/car.dto.mock';
+import { existingCar, mockCarRepository } from '../__moks__/car.mock';
 import { FindCarByIdUseCase } from '../application/useCases/findCarById.useCase';
 import { CarEntity } from '../domain/entities/car.entity';
-import { randomUUID } from 'crypto';
 
 describe('FindCarByIdUseCase', () => {
   let useCase: FindCarByIdUseCase;
@@ -25,22 +24,14 @@ describe('FindCarByIdUseCase', () => {
   });
 
   it('should return a car when a matching ID or plate is found', async () => {
-    const mockCar = new CarEntity(
-      randomUUID(),
-      'ABC123',
-      'blue',
-      'Toyota',
-      false,
-    );
+    carRepositoryMock.findCarById.mockResolvedValue(existingCar);
 
-    carRepositoryMock.findCarById.mockResolvedValue(mockCar);
-
-    const result = await useCase.execute('ABC123');
+    const result = await useCase.execute('OLD123');
 
     const spy = jest.spyOn(carRepositoryMock, 'findCarById');
 
-    expect(spy).toHaveBeenCalledWith('ABC123');
-    expect(result).toEqual(mockCar);
+    expect(spy).toHaveBeenCalledWith('OLD123');
+    expect(result).toEqual(existingCar);
     expect(result).toBeInstanceOf(CarEntity);
   });
 });

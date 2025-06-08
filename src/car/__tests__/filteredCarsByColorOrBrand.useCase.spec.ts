@@ -2,16 +2,11 @@ import { FilteredCarsByColorOrBrandUseCase } from '../application/useCases/filte
 import { CarRepository } from '../domain/repositories/car.repository';
 import { CarEntity } from '../domain/entities/car.entity';
 import { randomUUID } from 'crypto';
-import { mockCarRepository } from '../__moks__/car.dto.mock';
+import { fakeCarMockDto, mockCarRepository } from '../__moks__/car.mock';
 
 describe('FilteredCarsByColorOrBrandUseCase', () => {
   let useCase: FilteredCarsByColorOrBrandUseCase;
   let carRepository: jest.Mocked<CarRepository>;
-
-  const mockFilterDto = {
-    color: 'blue',
-    brand: 'Toyota',
-  };
 
   beforeEach(() => {
     carRepository = mockCarRepository();
@@ -27,10 +22,13 @@ describe('FilteredCarsByColorOrBrandUseCase', () => {
 
     carRepository.filteredCarsByColorOrBrand.mockResolvedValue(cars);
 
-    const result = await useCase.execute(mockFilterDto);
+    const result = await useCase.execute(fakeCarMockDto);
 
     const spy = jest.spyOn(carRepository, 'filteredCarsByColorOrBrand');
-    expect(spy).toHaveBeenCalledWith(mockFilterDto.color, mockFilterDto.brand);
+    expect(spy).toHaveBeenCalledWith(
+      fakeCarMockDto.color,
+      fakeCarMockDto.brand,
+    );
 
     expect(result).toEqual(cars);
   });

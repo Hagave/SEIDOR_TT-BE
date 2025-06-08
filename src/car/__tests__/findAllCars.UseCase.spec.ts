@@ -1,4 +1,4 @@
-import { mockCarRepository } from '../__moks__/car.dto.mock';
+import { mockCarRepository } from '../__moks__/car.mock';
 import { FindAllCarsUseCase } from '../application/useCases/findAllCars.UseCase';
 import { CarEntity } from '../domain/entities/car.entity';
 import { randomUUID } from 'crypto';

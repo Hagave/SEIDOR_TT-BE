@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DriverRepository } from 'src/driver/domain/repositories/driver.repository';
+import { DriverRepository } from '../../../driver/domain/repositories/driver.repository';
 import { FindDriverByIdUseCase } from './findDriverById.useCase';
 
 @Injectable()

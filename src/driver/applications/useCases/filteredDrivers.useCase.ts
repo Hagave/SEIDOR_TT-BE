@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DriverEntity } from 'src/driver/domain/entities/driver.entity';
-import { DriverRepository } from 'src/driver/domain/repositories/driver.repository';
-import { FilteredDriversDto } from 'src/driver/interfaces/dto/filteredDrivers.dto';
+import { DriverEntity } from '../../../driver/domain/entities/driver.entity';
+import { DriverRepository } from '../../../driver/domain/repositories/driver.repository';
+import { FilteredDriversDto } from '../../../driver/interfaces/dto/filteredDrivers.dto';
 
 @Injectable()
 export class FilteredDriversUseCase {

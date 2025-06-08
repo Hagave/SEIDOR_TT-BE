@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DriverEntity } from 'src/driver/domain/entities/driver.entity';
-import { DriverRepository } from 'src/driver/domain/repositories/driver.repository';
-import { CreateDriverDto } from 'src/driver/interfaces/dto/create-driver.dto';
+import { DriverEntity } from '../../../driver/domain/entities/driver.entity';
+import { DriverRepository } from '../../../driver/domain/repositories/driver.repository';
+import { CreateDriverDto } from '../../../driver/interfaces/dto/create-driver.dto';
 import { randomUUID } from 'node:crypto';
 
 @Injectable()

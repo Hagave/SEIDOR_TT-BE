@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DriverEntity } from 'src/driver/domain/entities/driver.entity';
-import { DriverRepository } from 'src/driver/domain/repositories/driver.repository';
+import { DriverEntity } from '../../../driver/domain/entities/driver.entity';
+import { DriverRepository } from '../../../driver/domain/repositories/driver.repository';
 
 @Injectable()
 export class FindDriverByIdUseCase {

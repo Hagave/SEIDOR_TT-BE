@@ -1,8 +1,11 @@
 import { UpdateCarByIdUseCase } from '../application/useCases/updateCarById.useCase';
 import { FindCarByIdUseCase } from '../application/useCases/findCarById.useCase';
-import { mockCarRepository } from '../__moks__/car.dto.mock';
+import {
+  existingCar,
+  mockCarRepository,
+  updateFakeCarDto,
+} from '../__moks__/car.mock';
 import { CarEntity } from '../domain/entities/car.entity';
-import { randomUUID } from 'crypto';
 import { UpdateCarDto } from '../interfaces/dto/update-car.dto';
 
 describe('UpdateCarByIdUseCase', () => {
@@ -29,60 +32,34 @@ describe('UpdateCarByIdUseCase', () => {
   });
 
   it('should update all fields of the car', async () => {
-    const existingCar = new CarEntity(
-      randomUUID(),
-      'OLD123',
-      'black',
-      'Ford',
-      false,
-    );
-
     carRepositoryMock.findCarById.mockResolvedValue(existingCar);
 
-    const updateDto: UpdateCarDto = {
-      plate: 'NEW456',
-      brand: 'Tesla',
-      color: 'white',
-      isReserved: true,
-    };
-
-    const result = await useCase.execute(existingCar.getId(), updateDto);
+    const result = await useCase.execute(existingCar.getId(), updateFakeCarDto);
     const spy = jest.spyOn(carRepositoryMock, 'updateCar');
 
-    // ✅ Correto: usa os getters para validar o novo estado
-    expect(result.getPlate()).toBe(updateDto.plate);
-    expect(result.getBrand()).toBe(updateDto.brand);
-    expect(result.getColor()).toBe(updateDto.color);
-    expect(result.getIsReserved()).toBe(updateDto.isReserved);
+    expect(result.getPlate()).toBe(updateFakeCarDto.plate);
+    expect(result.getBrand()).toBe(updateFakeCarDto.brand);
+    expect(result.getColor()).toBe(updateFakeCarDto.color);
+    expect(result.getIsReserved()).toBe(updateFakeCarDto.isReserved);
     expect(spy).toHaveBeenCalledWith(result);
   });
 
   it('should update only the isReserved', async () => {
-    const car = new CarEntity(randomUUID(), 'AAA111', 'gray', 'Fiat', false);
-    carRepositoryMock.findCarById.mockResolvedValue(car);
+    carRepositoryMock.findCarById.mockResolvedValue(existingCar);
 
-    const dto: UpdateCarDto = { isReserved: true };
-    const result = await useCase.execute(car.getId(), dto);
+    const dto: UpdateCarDto = { isReserved: false };
+    const result = await useCase.execute(existingCar.getId(), dto);
     const spy = jest.spyOn(carRepositoryMock, 'updateCar');
 
-    // ✅ Verifica que apenas isReserved foi atualizado
-    expect(result.getBrand()).toBe('Fiat');
-    expect(result.getColor()).toBe('gray');
-    expect(result.getPlate()).toBe('AAA111');
-    expect(result.getIsReserved()).toBe(true);
+    expect(result.getBrand()).toBe('Tesla');
+    expect(result.getColor()).toBe('white');
+    expect(result.getPlate()).toBe('NEW456');
+    expect(result.getIsReserved()).toBe(false);
     expect(spy).toHaveBeenCalledWith(result);
   });
 
   it('should return a car when a matching ID or plate is found', async () => {
-    const mockCar = new CarEntity(
-      randomUUID(),
-      'ABC123',
-      'blue',
-      'Toyota',
-      false,
-    );
-
-    carRepositoryMock.findCarById.mockResolvedValue(mockCar);
+    carRepositoryMock.findCarById.mockResolvedValue(existingCar);
 
     const updateDto: UpdateCarDto = {
       plate: 'ABC123',
@@ -91,11 +68,11 @@ describe('UpdateCarByIdUseCase', () => {
       isReserved: false,
     };
 
-    const result = await useCase.execute(mockCar.getId(), updateDto);
+    const result = await useCase.execute(existingCar.getId(), updateDto);
     const spy = jest.spyOn(carRepositoryMock, 'findCarById');
 
-    expect(spy).toHaveBeenCalledWith(mockCar.getId());
-    expect(result).toEqual(mockCar);
+    expect(spy).toHaveBeenCalledWith(existingCar.getId());
+    expect(result).toEqual(existingCar);
     expect(result).toBeInstanceOf(CarEntity);
   });
 });

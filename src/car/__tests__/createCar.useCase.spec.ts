@@ -1,8 +1,11 @@
 import { ConflictException } from '@nestjs/common';
 import { CarEntity } from '../domain/entities/car.entity';
-import { randomUUID } from 'crypto';
 import { CreateCarUseCase } from '../application/useCases/createCar.useCase';
-import { mockCarRepository, mockDto } from '../__moks__/car.dto.mock';
+import {
+  existingCar,
+  fakeCarMockDto,
+  mockCarRepository,
+} from '../__moks__/car.mock';
 import { CarRepository } from '../domain/repositories/car.repository';
 import { FindCarByIdUseCase } from '../application/useCases/findCarById.useCase';
 
@@ -26,33 +29,19 @@ describe('CreateCarUseCase', () => {
   it('should create a new car if plate does not exist', async () => {
     findCarByIdUseCase.execute.mockResolvedValue(null);
 
-    const fakeCar = new CarEntity(
-      randomUUID(),
-      mockDto.plate,
-      mockDto.color,
-      mockDto.brand,
-      false,
-    );
+    carRepo.createCar.mockResolvedValue(existingCar);
 
-    carRepo.createCar.mockResolvedValue(fakeCar);
-
-    const result = await useCase.execute(mockDto);
+    const result = await useCase.execute(fakeCarMockDto);
 
     expect(result).toBeInstanceOf(CarEntity);
-    expect(result.getPlate()).toEqual('ABC123');
+    expect(result.getPlate()).toEqual('OLD123');
   });
 
   it('should throw ConflictException if car plate already exists', async () => {
-    const existingCar = new CarEntity(
-      randomUUID(),
-      mockDto.plate,
-      mockDto.color,
-      mockDto.brand,
-      false,
-    );
-
     findCarByIdUseCase.execute.mockResolvedValue(existingCar);
 
-    await expect(useCase.execute(mockDto)).rejects.toThrow(ConflictException);
+    await expect(useCase.execute(fakeCarMockDto)).rejects.toThrow(
+      ConflictException,
+    );
   });
 });

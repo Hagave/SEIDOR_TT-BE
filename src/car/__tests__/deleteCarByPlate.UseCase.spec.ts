@@ -1,17 +1,13 @@
 import { NotFoundException } from '@nestjs/common';
-import { CarEntity } from '../domain/entities/car.entity';
-import { randomUUID } from 'crypto';
 import { CarRepository } from '../domain/repositories/car.repository';
 import { FindCarByIdUseCase } from '../application/useCases/findCarById.useCase';
 import { DeleteCarByIdUseCase } from '../application/useCases/deleteCarByPlate.UseCase';
-import { mockCarRepository } from '../__moks__/car.dto.mock';
+import { existingCar, mockCarRepository } from '../__moks__/car.mock';
 
 describe('DeleteCarByIdUseCase', () => {
   let useCase: DeleteCarByIdUseCase;
   let carRepository: jest.Mocked<CarRepository>;
   let findCarByIdUseCase: jest.Mocked<FindCarByIdUseCase>;
-
-  const plate = 'ABC123';
 
   beforeEach(() => {
     carRepository = mockCarRepository();
@@ -26,23 +22,15 @@ describe('DeleteCarByIdUseCase', () => {
   });
 
   it('should delete the car if it exists', async () => {
-    const existingCar = new CarEntity(
-      randomUUID(),
-      plate,
-      'black',
-      'Honda',
-      false,
-    );
-
     findCarByIdUseCase.execute.mockResolvedValue(existingCar);
     carRepository.deleteCarByPlate.mockResolvedValue(undefined);
 
-    await useCase.execute(plate);
+    await useCase.execute(existingCar.getPlate());
   });
 
   it('should throw NotFoundException if car does not exist', async () => {
     findCarByIdUseCase.execute.mockResolvedValue(null);
-
+    const plate = 'ABC123';
     await expect(useCase.execute(plate)).rejects.toThrow(NotFoundException);
   });
 });
