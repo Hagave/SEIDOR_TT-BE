@@ -76,6 +76,7 @@ pnpm run start
 O backend estará disponível em http://localhost:3000.
 
 Parando os Contêineres
+
 Para parar os serviços Docker:
 
 ```bash
