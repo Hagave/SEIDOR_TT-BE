@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  backendDB:
+    image: postgres:16
+    container_name: backendDB
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: backendDB
+    ports:
+      - 5432:5432
+    volumes:
+      - backendDB:/var/lib/postgresql/data
+volumes:
+  backendDB:
