@@ -1,14 +1,8 @@
 import { BookCar } from 'generated/prisma';
 import { BookingCarEntity } from 'src/booking-car/domain/entities/booking-car.entity';
-import { CarEntity } from 'src/car/domain/entities/car.entity';
-import { DriverEntity } from 'src/driver/domain/entities/driver.entity';
 
 export class BookingCarMapper {
-  static toEntity(
-    bookingCar: BookCar,
-    car?: CarEntity,
-    driver?: DriverEntity,
-  ): BookingCarEntity {
+  static toEntity(bookingCar: BookCar): BookingCarEntity {
     return new BookingCarEntity(
       bookingCar.id,
       bookingCar.carId,
@@ -16,8 +10,7 @@ export class BookingCarMapper {
       bookingCar.reason,
       bookingCar.bookedAt,
       bookingCar.deliveredAt,
-      car,
-      driver,
+      bookingCar.hasDelivery,
     );
   }
 
@@ -29,6 +22,7 @@ export class BookingCarMapper {
       reason: bookingCarEntity.getreason(),
       bookedAt: bookingCarEntity.getBookedAt(),
       deliveredAt: bookingCarEntity.getDeliveredAt(),
+      hasDelivery: bookingCarEntity.gethasDelivery(),
     };
   }
 }

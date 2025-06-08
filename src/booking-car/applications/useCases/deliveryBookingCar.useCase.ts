@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BookingCarEntity } from 'src/booking-car/domain/entities/booking-car.entity';
-import { BookingCarRepository } from 'src/booking-car/domain/repositories/bookingCar.repository';
-import { UpdateBookingCarDto } from 'src/booking-car/interfaces/dto/update-booking-car.dto';
-import { FindCarByIdUseCase } from 'src/car/application/useCases/findCarById.useCase';
-import { UpdateCarByIdUseCase } from 'src/car/application/useCases/updateCarById.useCase';
-import { FindDriverByIdUseCase } from 'src/driver/applications/useCases/findDriverById.useCase';
-import { UpdateDriverByIdUseCase } from 'src/driver/applications/useCases/updateDriverById.useCase';
+import { BookingCarEntity } from '../../../booking-car/domain/entities/booking-car.entity';
+import { BookingCarRepository } from '../../../booking-car/domain/repositories/bookingCar.repository';
+import { UpdateBookingCarDto } from '../../../booking-car/interfaces/dto/update-booking-car.dto';
+import { FindCarByIdUseCase } from '../../../car/application/useCases/findCarById.useCase';
+import { UpdateCarByIdUseCase } from '../../../car/application/useCases/updateCarById.useCase';
+import { FindDriverByIdUseCase } from '../../../driver/applications/useCases/findDriverById.useCase';
+import { UpdateDriverByIdUseCase } from '../../../driver/applications/useCases/updateDriverById.useCase';
 import { FindBookingCarByIdUseCase } from './findBookingCarById.useCase';
 
 @Injectable()
@@ -50,12 +50,16 @@ export class DeliveryBookingCarUseCase {
     if (updateBookingCarDto.deliveredAt) {
       existBooking.updateDeliveryAt(updateBookingCarDto.deliveredAt);
     }
+    if (typeof updateBookingCarDto.hasDelivery === 'boolean') {
+      existBooking.updateHasDelivery(updateBookingCarDto.hasDelivery);
+    }
 
     await this.updateDriverByIdUseCase.execute(
       existDriver.getId(),
       driverPayload,
     );
     await this.updateCarByIdUseCase.execute(existCar.getId(), carPayload);
+
     return this.bookingCarRepository.deliveryBooking(bookingId, existBooking);
   }
 }

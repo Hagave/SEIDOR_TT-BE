@@ -8,6 +8,7 @@ export class BookingCarEntity {
     private reason: string,
     private bookedAt: Date,
     private deliveredAt: Date,
+    private hasDelivery: boolean,
   ) {
     if (!this.id) throw new Error('Id is required');
     if (!this.carId) throw new Error('carId is required');
@@ -15,6 +16,8 @@ export class BookingCarEntity {
     if (!this.reason) throw new Error('reason is required');
     if (!this.bookedAt) throw new Error('bookedAt is required');
     if (!this.deliveredAt) throw new Error('deliveredAt is required');
+    if (typeof this.hasDelivery !== 'boolean')
+      throw new Error('hasDelivery is required');
   }
 
   // -------- GETTERS --------//
@@ -39,6 +42,10 @@ export class BookingCarEntity {
     return this.deliveredAt;
   }
 
+  gethasDelivery() {
+    return this.hasDelivery;
+  }
+
   // -------- DOMAIN BEHAVIOR --------//
 
   updateReson(newReason: string): void {
@@ -48,10 +55,19 @@ export class BookingCarEntity {
   }
   updateBookedAt(newDate: Date) {
     if (newDate === this.bookedAt)
-      throw new ConflictException('You can`t use the same data');
+      throw new ConflictException('You can`t use the same booked data');
+    this.bookedAt = newDate;
   }
   updateDeliveryAt(newDate: Date) {
     if (newDate === this.deliveredAt)
-      throw new ConflictException('You can`t use the same data');
+      throw new ConflictException('You can`t use the same delivery data');
+    this.deliveredAt = newDate;
+  }
+
+  updateHasDelivery(newDelivery: boolean): void {
+    if (newDelivery && this.hasDelivery)
+      throw new ConflictException('The booking has already delivered');
+
+    this.hasDelivery = newDelivery;
   }
 }

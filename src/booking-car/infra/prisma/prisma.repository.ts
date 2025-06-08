@@ -38,6 +38,7 @@ export class PrismaBookingRepository implements BookingCarRepository {
         reason: bookingCarEntity.getreason(),
         bookedAt: bookingCarEntity.getBookedAt(),
         deliveredAt: bookingCarEntity.getDeliveredAt(),
+        hasDelivery: bookingCarEntity.gethasDelivery(),
       },
     });
     return BookingCarMapper.toEntity(newDeliveryBookingCar);

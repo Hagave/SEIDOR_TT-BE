@@ -2,15 +2,16 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
-import { BookingCarEntity } from 'src/booking-car/domain/entities/booking-car.entity';
-import { BookingCarRepository } from 'src/booking-car/domain/repositories/bookingCar.repository';
+import { BookingCarEntity } from '../../../booking-car/domain/entities/booking-car.entity';
+import { BookingCarRepository } from '../../../booking-car/domain/repositories/bookingCar.repository';
 import { randomUUID } from 'node:crypto';
-import { CreateBookingCarDto } from 'src/booking-car/interfaces/dto/create-booking-car.dto';
-import { FindCarByIdUseCase } from 'src/car/application/useCases/findCarById.useCase';
-import { FindDriverByIdUseCase } from 'src/driver/applications/useCases/findDriverById.useCase';
-import { UpdateDriverByIdUseCase } from 'src/driver/applications/useCases/updateDriverById.useCase';
-import { UpdateCarByIdUseCase } from 'src/car/application/useCases/updateCarById.useCase';
+import { CreateBookingCarDto } from '../../../booking-car/interfaces/dto/create-booking-car.dto';
+import { FindCarByIdUseCase } from '../../../car/application/useCases/findCarById.useCase';
+import { FindDriverByIdUseCase } from '../../../driver/applications/useCases/findDriverById.useCase';
+import { UpdateDriverByIdUseCase } from '../../../driver/applications/useCases/updateDriverById.useCase';
+import { UpdateCarByIdUseCase } from '../../../car/application/useCases/updateCarById.useCase';
 
 @Injectable()
 export class CreateBookingCarUseCase {
@@ -28,7 +29,6 @@ export class CreateBookingCarUseCase {
     const existCar = await this.findCarByIdUseCase.execute(
       createBookingCarDto.carId,
     );
-
     const existDriver = await this.findDriverByIdUseCase.execute(
       createBookingCarDto.driverId,
     );
@@ -41,13 +41,8 @@ export class CreateBookingCarUseCase {
         'The Car or Driver already driving or in use',
       );
 
-    const driverPayload = {
-      isDriving: true,
-    };
-
-    const carPayload = {
-      isReserved: true,
-    };
+    const driverPayload = { isDriving: true };
+    const carPayload = { isReserved: true };
 
     const newBookedCar = new BookingCarEntity(
       randomUUID(),
@@ -56,12 +51,31 @@ export class CreateBookingCarUseCase {
       createBookingCarDto.reason,
       createBookingCarDto.bookedAt,
       createBookingCarDto.deliveredAt,
+      false,
     );
-    await this.updateDriverByIdUseCase.execute(
-      existDriver.getId(),
-      driverPayload,
-    );
-    await this.updateCarByIdUseCase.execute(existCar.getId(), carPayload);
+
+    try {
+      await Promise.all([
+        this.updateDriverByIdUseCase.execute(
+          existDriver.getId(),
+          driverPayload,
+        ),
+        this.updateCarByIdUseCase.execute(existCar.getId(), carPayload),
+      ]);
+    } catch {
+      await Promise.allSettled([
+        this.updateDriverByIdUseCase.execute(existDriver.getId(), {
+          isDriving: false,
+        }),
+        this.updateCarByIdUseCase.execute(existCar.getId(), {
+          isReserved: false,
+        }),
+      ]);
+      throw new UnprocessableEntityException(
+        'Was not possible to reserve car or driver. Please check both availability and try later',
+      );
+    }
+
     return this.bookingCarRepository.createBooking(newBookedCar);
   }
 }

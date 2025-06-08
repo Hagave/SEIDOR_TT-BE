@@ -35,6 +35,7 @@ model BookCar {
   reason      String
   bookedAt    DateTime
   deliveredAt DateTime
+  hasDelivery Boolean @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   driver      Driver    @relation(fields: [driverId], references: [id])
