@@ -1,8 +1,6 @@
-import { ConflictException } from '@nestjs/common';
-
 export class BookingCarEntity {
   constructor(
-    private id: string,
+    private readonly id: string,
     private carId: string,
     private driverId: string,
     private reason: string,
@@ -50,23 +48,23 @@ export class BookingCarEntity {
 
   updateReson(newReason: string): void {
     if (newReason === this.reason)
-      throw new ConflictException('You can`t use the same reason');
+      throw new Error('You can`t use the same reason');
     this.reason = newReason;
   }
   updateBookedAt(newDate: Date) {
     if (newDate === this.bookedAt)
-      throw new ConflictException('You can`t use the same booked data');
+      throw new Error('You can`t use the same booked data');
     this.bookedAt = newDate;
   }
   updateDeliveryAt(newDate: Date) {
     if (newDate === this.deliveredAt)
-      throw new ConflictException('You can`t use the same delivery data');
+      throw new Error('You can`t use the same delivery data');
     this.deliveredAt = newDate;
   }
 
   updateHasDelivery(newDelivery: boolean): void {
-    if (newDelivery && this.hasDelivery)
-      throw new ConflictException('The booking has already delivered');
+    if (newDelivery === this.hasDelivery)
+      throw new Error('The booking has already delivered');
 
     this.hasDelivery = newDelivery;
   }

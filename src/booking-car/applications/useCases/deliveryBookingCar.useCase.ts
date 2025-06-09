@@ -37,7 +37,7 @@ export class DeliveryBookingCarUseCase {
     );
 
     if (!existCar || !existDriver)
-      throw new NotFoundException('The car or driver were not found');
+      throw new NotFoundException('Car or driver not found');
 
     const driverPayload = {
       isDriving: false,

@@ -1,22 +1,20 @@
-import { ConflictException } from '@nestjs/common';
-
 export class CarEntity {
   constructor(
-    private id: string,
+    private readonly id: string,
     private plate: string,
     private color: string,
     private brand: string,
     private isReserved: boolean,
   ) {
-    if (!this.id) throw new Error('Id is required');
-    if (!this.plate) throw new Error('plate is required');
-    if (!this.color) throw new Error('color is required');
-    if (!this.brand) throw new Error('brand is required');
-    if (typeof this.isReserved !== 'boolean')
+    if (!id) throw new Error('Id is required');
+    if (!plate) throw new Error('Plate is required');
+    if (!color) throw new Error('Color is required');
+    if (!brand) throw new Error('Brand is required');
+    if (typeof isReserved !== 'boolean')
       throw new Error('isReserved is required');
   }
 
-  // -------- GETTERS --------//
+  // Getters
   getId(): string {
     return this.id;
   }
@@ -33,13 +31,11 @@ export class CarEntity {
     return this.isReserved;
   }
 
-  // -------- DOMAIN BEHAVIOR --------//
-
+  // Domain behavior
   updateReserve(newReserved: boolean): void {
     if (newReserved && this.isReserved) {
-      throw new ConflictException('Car is already reserved');
+      throw new Error('Car is already reserved');
     }
-
     this.isReserved = newReserved;
   }
 

@@ -15,7 +15,7 @@ export class UpdateCarByIdUseCase {
     const existCar = await this.findCarByIdUseCase.execute(carId);
 
     if (!existCar)
-      throw new NotFoundException(`The car with id : ${carId} does not exist`);
+      throw new NotFoundException(`Car with ID "${carId}" was not found.`);
 
     if (updateCarDto.brand) {
       existCar.updateBrand(updateCarDto.brand);

@@ -17,7 +17,7 @@ export class CreateCarUseCase {
 
     if (existCar) {
       throw new ConflictException(
-        `The Car with this plate ${existCar.getPlate()} already exists.`,
+        `A car with plate "${existCar.getPlate()}" already exists.`,
       );
     }
 

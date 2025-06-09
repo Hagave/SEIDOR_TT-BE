@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { DriverRepository } from '../../../driver/domain/repositories/driver.repository';
 import { FindDriverByIdUseCase } from './findDriverById.useCase';
 
@@ -15,6 +19,11 @@ export class DeleteDriverByIdUseCase {
     if (!existDriver)
       throw new NotFoundException(
         `The Driver with id: ${driverId} does not exist`,
+      );
+
+    if (existDriver.getIsDriving())
+      throw new NotAcceptableException(
+        "This driver is currently on a trip. You can't delete them before the trip is finished.",
       );
 
     return this.driverRepository.deleteDriverById(driverId);
