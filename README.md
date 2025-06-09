@@ -81,6 +81,18 @@ pnpm run start
 
 O backend estará disponível em http://localhost:3000.
 
+### Testando rotas
+
+### Caso tenha o insomnia na versão 4+, você pode importar o arquivo SEIDOR_INSOMNIA_FILE que contém todas as rotas para facilitar os testes
+
+```bash
+SEIDOR_INSOMNIA_FILE
+```
+
+
+## Não é possível deletar um carro ou motorista que está vinculado a um agendamento.
+
+
 Parando os Contêineres
 
 Para parar os serviços Docker:
