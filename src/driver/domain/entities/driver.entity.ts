@@ -1,8 +1,8 @@
-import { BadRequestException, ConflictException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 
 export class DriverEntity {
   constructor(
-    private id: string,
+    private readonly id: string,
     private name: string,
     private isDriving: boolean,
   ) {
@@ -26,16 +26,12 @@ export class DriverEntity {
   //--------DOMAIN BEHAVIOR ----------
 
   updateName(newName: string): void {
-    if (newName === this.name)
-      throw new ConflictException('You can`t use the same name');
+    if (newName === this.name) throw new Error('You can`t use the same name');
 
     this.name = newName;
   }
 
   updateIsDriving(newStatus: boolean): void {
-    if (newStatus === this.isDriving)
-      throw new ConflictException('You can`t use the same status');
-
     this.isDriving = newStatus;
   }
 }

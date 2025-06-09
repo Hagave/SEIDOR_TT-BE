@@ -34,11 +34,11 @@ export class CreateBookingCarUseCase {
     );
 
     if (!existCar || !existDriver)
-      throw new NotFoundException('The car or driver were not found');
+      throw new NotFoundException('The car or the driver was not found');
 
     if (existCar.getIsReserved() || existDriver.getIsDriving())
       throw new ConflictException(
-        'The Car or Driver already driving or in use',
+        'The car is reserved or the driver is currently on a trip',
       );
 
     const driverPayload = { isDriving: true };
@@ -72,7 +72,7 @@ export class CreateBookingCarUseCase {
         }),
       ]);
       throw new UnprocessableEntityException(
-        'Was not possible to reserve car or driver. Please check both availability and try later',
+        'Unable to reserve the car or driver. Please check their availability and try again later.',
       );
     }
 

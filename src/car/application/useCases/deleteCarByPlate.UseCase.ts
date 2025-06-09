@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CarRepository } from '../../../car/domain/repositories/car.repository';
 import { FindCarByIdUseCase } from './findCarById.useCase';
 
@@ -14,8 +18,14 @@ export class DeleteCarByIdUseCase {
 
     if (!existCar)
       throw new NotFoundException(
-        `The car with plate or Id ${plateOrId} does not exist`,
+        `Car with plate or ID "${plateOrId}" was not found.`,
       );
+
+    if (existCar.getIsReserved())
+      throw new NotAcceptableException(
+        "This car is currently reserved. You can't delete it until the trip is completed.",
+      );
+
     return this.carRepository.deleteCarByPlate(existCar.getPlate());
   }
 }
