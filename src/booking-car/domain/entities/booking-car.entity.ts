@@ -1,3 +1,6 @@
+import { CarEntity } from 'src/car/domain/entities/car.entity';
+import { DriverEntity } from 'src/driver/domain/entities/driver.entity';
+
 export class BookingCarEntity {
   constructor(
     private readonly id: string,
@@ -7,6 +10,8 @@ export class BookingCarEntity {
     private bookedAt: Date,
     private deliveredAt: Date,
     private hasDelivery: boolean,
+    private readonly car?: CarEntity, // entidade rica
+    private readonly driver?: DriverEntity,
   ) {
     if (!this.id) throw new Error('Id is required');
     if (!this.carId) throw new Error('carId is required');
@@ -42,6 +47,13 @@ export class BookingCarEntity {
 
   gethasDelivery() {
     return this.hasDelivery;
+  }
+
+  getCar() {
+    return this.car;
+  }
+  getDriver() {
+    return this.driver;
   }
 
   // -------- DOMAIN BEHAVIOR --------//

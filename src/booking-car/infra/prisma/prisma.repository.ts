@@ -45,7 +45,9 @@ export class PrismaBookingRepository implements BookingCarRepository {
   }
 
   async findAllBookings(): Promise<BookingCarEntity[]> {
-    const foundAllBookings = await this.prisma.bookCar.findMany();
+    const foundAllBookings = await this.prisma.bookCar.findMany({
+      include: { car: true, driver: true },
+    });
 
     return foundAllBookings.map((foundAllBook) =>
       BookingCarMapper.toEntity(foundAllBook),
@@ -55,6 +57,7 @@ export class PrismaBookingRepository implements BookingCarRepository {
   async findBookingById(bookingId: string): Promise<BookingCarEntity | null> {
     const existBooking = await this.prisma.bookCar.findUnique({
       where: { id: bookingId },
+      include: { car: true, driver: true },
     });
     return existBooking ? BookingCarMapper.toEntity(existBooking) : null;
   }

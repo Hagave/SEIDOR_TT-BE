@@ -1,8 +1,12 @@
-import { BookCar } from 'generated/prisma';
-import { BookingCarEntity } from 'src/booking-car/domain/entities/booking-car.entity';
+import { BookCar, Car, Driver } from 'generated/prisma';
+import { BookingCarEntity } from '../../../booking-car/domain/entities/booking-car.entity';
+import { CarMapper } from '../../../car/application/mapper/car.mapper';
+import { DriverMapper } from '../../../driver/applications/mapper/driver.mapper';
 
 export class BookingCarMapper {
-  static toEntity(bookingCar: BookCar): BookingCarEntity {
+  static toEntity(
+    bookingCar: BookCar & { car?: Car; driver?: Driver },
+  ): BookingCarEntity {
     return new BookingCarEntity(
       bookingCar.id,
       bookingCar.carId,
@@ -11,18 +15,20 @@ export class BookingCarMapper {
       bookingCar.bookedAt,
       bookingCar.deliveredAt,
       bookingCar.hasDelivery,
+      bookingCar.car ? CarMapper.toEntity(bookingCar.car) : undefined,
+      bookingCar.driver ? DriverMapper.toEntity(bookingCar.driver) : undefined,
     );
   }
 
-  static toPrisma(bookingCarEntity: BookingCarEntity) {
+  static toPrisma(entity: BookingCarEntity) {
     return {
-      id: bookingCarEntity.getId(),
-      carId: bookingCarEntity.getCarId(),
-      driverId: bookingCarEntity.getDriverId(),
-      reason: bookingCarEntity.getreason(),
-      bookedAt: bookingCarEntity.getBookedAt(),
-      deliveredAt: bookingCarEntity.getDeliveredAt(),
-      hasDelivery: bookingCarEntity.gethasDelivery(),
+      id: entity.getId(),
+      carId: entity.getCarId(),
+      driverId: entity.getDriverId(),
+      reason: entity.getreason(),
+      bookedAt: entity.getBookedAt(),
+      deliveredAt: entity.getDeliveredAt(),
+      hasDelivery: entity.gethasDelivery(),
     };
   }
 }
