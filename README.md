@@ -23,6 +23,12 @@ git clone git@github.com:Hagave/SEIDOR_TT-BE.git
 cd SEIDOR_TT-BE
 ```
 
+### Caso não tenha o pnpm instalado, por favor, instale. Se já possúi, pode ignorar essa etapa.
+
+```bash
+npm install -g pnpm
+```
+
 ### 2. Configure as variáveis de ambiente
 
 Renomeie o arquivo .env.example para .env.
